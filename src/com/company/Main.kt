@@ -1,37 +1,29 @@
-package com.company;
+package com.company
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import com.sun.net.httpserver.HttpExchange
+import com.sun.net.httpserver.HttpHandler
+import com.sun.net.httpserver.HttpServer
+import org.json.simple.JSONObject
+import org.json.simple.JSONValue
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.InetSocketAddress
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-
-public class Main {
-
-    public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(5000), 0);
-        server.createContext("/", new CustomHandler());
-        server.start();
+object Main {
+    @Throws(IOException::class)
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val server = HttpServer.create(InetSocketAddress(5000), 0)
+        server.createContext("/", CustomHandler())
+        server.start()
     }
 }
 
-class CustomHandler implements HttpHandler {
-
-    @Override
-    public void handle(HttpExchange exchange) {
-
-        Object obj = JSONValue.parse(new InputStreamReader(exchange.getRequestBody()));
-
-        JSONObject jsonObject = (JSONObject) obj;
-
-        JSONObject payload = (JSONObject) jsonObject.get("payload_fields");
-
-        System.out.println(payload.toJSONString());
-
+internal class CustomHandler : HttpHandler {
+    override fun handle(exchange: HttpExchange) {
+        val obj = JSONValue.parse(InputStreamReader(exchange.requestBody))
+        val jsonObject = obj as JSONObject
+        val payload = jsonObject["payload_fields"] as JSONObject
+        println(payload.toJSONString())
     }
-
 }
